@@ -4,7 +4,7 @@
  <title>Node Disassemble!</title>
  <link href="http://www.node-disassemble.com/atom.xml" rel="self"/>
  <link href="http://www.node-disassemble.com/"/>
- <updated>2014-09-04T14:04:02-04:00</updated>
+ <updated>2014-09-04T17:08:06-04:00</updated>
  <id>http://www.node-disassemble.com</id>
  <author>
    <name>Todd Lawton Beauchamp</name>
@@ -13,11 +13,15 @@
 
  
  <entry>
-   <title>Build your own simple weather display with NodeJS and Arduino</title>
+   <title>Use NodeJS and Arduino to build a weather display</title>
    <link href="http://www.node-disassemble.com//2014/09/04/lcd-weather-display/"/>
    <updated>2014-09-04T00:00:00-04:00</updated>
    <id>http://www.node-disassemble.com/2014/09/04/lcd-weather-display</id>
-   <content type="html">&lt;p&gt;In this short guide I&amp;#39;ll explain how I built my own desktop weather display on an &lt;a href=&quot;http://arduino.cc/en/Main/ArduinoBoardUno&quot;&gt;Arduino Uno&lt;/a&gt; running Node and &lt;a href=&quot;https://github.com/rwaldron/johnny-five&quot;&gt;Johnny-Five&lt;/a&gt;.&lt;/p&gt;
+   <content type="html">&lt;p&gt;&lt;img class=&quot;float-right&quot; src=&quot;https://cloud.githubusercontent.com/assets/5748440/4144068/ac68fe0a-33d7-11e4-88a1-762d0fdd8fea.gif&quot;/&gt;&lt;/p&gt;
+
+&lt;p&gt;In this short guide I&amp;#39;ll explain how I built my own desktop weather display on an &lt;a href=&quot;http://arduino.cc/en/Main/ArduinoBoardUno&quot;&gt;Arduino Uno&lt;/a&gt; running Node and &lt;a href=&quot;https://github.com/rwaldron/johnny-five&quot;&gt;Johnny-Five&lt;/a&gt;. This could serve as a nice desktop ornament that you can glance at when you wake up in the morning, and the principles in this guide will serve well in future projects that require some hardware interaction with an API. &lt;/p&gt;
+
+&lt;p&gt;This project will use is the &lt;a href=&quot;http://openweathermap.org/API&quot;&gt;OpenWeatherMap API&lt;/a&gt;.&lt;/p&gt;
 
 &lt;hr&gt;
 
@@ -30,7 +34,13 @@
 &lt;li&gt;A potentiometer&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3&gt;Step 1: Wire it up&lt;/h3&gt;
+&lt;hr&gt;
+
+&lt;h3&gt;So, why Arduino?&lt;/h3&gt;
+
+&lt;p&gt;Since any microcontroller board that is capable of running Node and has digital I/O pins will run this, I consider this project to be hardware agnostic to a certain extent. I chose the Arduino Uno as my first board because they have a great community, they&amp;#39;re easily extendable, and the boards are made in Italy under ethical conditions for a reasonable price. &lt;/p&gt;
+
+&lt;p&gt;I started out by doing a few small projects in C++ in the Arduino IDE so I could understand a little bit better how these boards work before adding layers of abstraction with JS and its hardware libraries.&lt;/p&gt;
 </content>
  </entry>
  
