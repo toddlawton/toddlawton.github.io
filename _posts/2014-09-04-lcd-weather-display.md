@@ -307,8 +307,16 @@ function fireItUp() {
 }
 ```
 
-I hope this tutorial has been helpful, and that you push this even further! 
+-----
 
-You can find the code for this little project on GitHub [right here](https://github.com/toddlawton/arduino-nodebots/tree/master/node/lcd-weather-display). 
+### Fifth step: Fire it up
 
-If you'd like to follow me on twitter, I'm [@toddlawton](http://twitter.com/toddlawton)
+```node lcd-weather-display```
+
+-----
+
+I hope this tutorial has been helpful, and that you push this concept even further to make super great awesome projects.
+
+You can find the [finished code](https://github.com/toddlawton/arduino-nodebots/tree/master/node/lcd-weather-display) on GitHub. 
+
+If you'd like any help or to follow me on twitter, I'm [@toddlawton](http://twitter.com/toddlawton). Thanks for reading!

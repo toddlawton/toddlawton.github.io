@@ -4,7 +4,7 @@
  <title>Node Disassemble!</title>
  <link href="http://www.node-disassemble.com/atom.xml" rel="self"/>
  <link href="http://www.node-disassemble.com/"/>
- <updated>2014-09-04T23:28:24-04:00</updated>
+ <updated>2014-09-04T23:33:43-04:00</updated>
  <id>http://www.node-disassemble.com</id>
  <author>
    <name>Todd Lawton Beauchamp</name>
@@ -304,11 +304,19 @@ When you&amp;#39;ve got all of the data you need, call a function to execute the
         });
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;I hope this tutorial has been helpful, and that you push this even further! &lt;/p&gt;
+&lt;hr&gt;
 
-&lt;p&gt;You can find the code for this little project on GitHub &lt;a href=&quot;https://github.com/toddlawton/arduino-nodebots/tree/master/node/lcd-weather-display&quot;&gt;right here&lt;/a&gt;. &lt;/p&gt;
+&lt;h3&gt;Fifth step: Fire it up&lt;/h3&gt;
 
-&lt;p&gt;If you&amp;#39;d like to follow me on twitter, I&amp;#39;m &lt;a href=&quot;http://twitter.com/toddlawton&quot;&gt;@toddlawton&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;node lcd-weather-display&lt;/code&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;I hope this tutorial has been helpful, and that you push this concept even further to make super great awesome projects.&lt;/p&gt;
+
+&lt;p&gt;You can find the &lt;a href=&quot;https://github.com/toddlawton/arduino-nodebots/tree/master/node/lcd-weather-display&quot;&gt;finished code&lt;/a&gt; on GitHub. &lt;/p&gt;
+
+&lt;p&gt;If you&amp;#39;d like any help or to follow me on twitter, I&amp;#39;m &lt;a href=&quot;http://twitter.com/toddlawton&quot;&gt;@toddlawton&lt;/a&gt;. Thanks for reading!&lt;/p&gt;
 </content>
  </entry>
  
