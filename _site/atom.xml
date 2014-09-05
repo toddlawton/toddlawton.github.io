@@ -4,7 +4,7 @@
  <title>Node Disassemble!</title>
  <link href="http://www.node-disassemble.com/atom.xml" rel="self"/>
  <link href="http://www.node-disassemble.com/"/>
- <updated>2014-09-04T17:08:06-04:00</updated>
+ <updated>2014-09-04T22:32:23-04:00</updated>
  <id>http://www.node-disassemble.com</id>
  <author>
    <name>Todd Lawton Beauchamp</name>
@@ -17,30 +17,153 @@
    <link href="http://www.node-disassemble.com//2014/09/04/lcd-weather-display/"/>
    <updated>2014-09-04T00:00:00-04:00</updated>
    <id>http://www.node-disassemble.com/2014/09/04/lcd-weather-display</id>
-   <content type="html">&lt;p&gt;&lt;img class=&quot;float-right&quot; src=&quot;https://cloud.githubusercontent.com/assets/5748440/4144068/ac68fe0a-33d7-11e4-88a1-762d0fdd8fea.gif&quot;/&gt;&lt;/p&gt;
+   <content type="html">&lt;p&gt;&lt;img class=&quot;float-right&quot; alt=&quot;The finished LCD display in action&quot; src=&quot;https://cloud.githubusercontent.com/assets/5748440/4144068/ac68fe0a-33d7-11e4-88a1-762d0fdd8fea.gif&quot;/&gt;&lt;/p&gt;
 
-&lt;p&gt;In this short guide I&amp;#39;ll explain how I built my own desktop weather display on an &lt;a href=&quot;http://arduino.cc/en/Main/ArduinoBoardUno&quot;&gt;Arduino Uno&lt;/a&gt; running Node and &lt;a href=&quot;https://github.com/rwaldron/johnny-five&quot;&gt;Johnny-Five&lt;/a&gt;. This could serve as a nice desktop ornament that you can glance at when you wake up in the morning, and the principles in this guide will serve well in future projects that require some hardware interaction with an API. &lt;/p&gt;
+&lt;p&gt;In this tutorial I&amp;#39;ll explain how to build your own LCD weather display on an &lt;a href=&quot;http://arduino.cc/en/Main/ArduinoBoardUno&quot;&gt;Arduino Uno&lt;/a&gt; running Node and &lt;a href=&quot;https://github.com/rwaldron/johnny-five&quot;&gt;Johnny-Five&lt;/a&gt;. This could serve as a nice desktop ornament that you can glance at when you wake up in the morning, and the principles in this guide will serve well in future projects that require hardware interaction with an API. &lt;/p&gt;
 
-&lt;p&gt;This project will use is the &lt;a href=&quot;http://openweathermap.org/API&quot;&gt;OpenWeatherMap API&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;This project will use is the pretty awesome &lt;a href=&quot;http://openweathermap.org/API&quot;&gt;OpenWeatherMap API&lt;/a&gt;.&lt;/p&gt;
 
 &lt;hr&gt;
 
-&lt;p&gt;You&amp;#39;ll need the following things before starting:&lt;/p&gt;
+&lt;h3&gt;Gather up:&lt;/h3&gt;
 
 &lt;ul&gt;
-&lt;li&gt;A 16x2 LCD display, I used the &lt;a href=&quot;http://arduino.cc/documents/datasheets/LCD-WH1602B-TMI.pdf&quot;&gt;LCD-WH1602B&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;An Arduino board, many will work with this project, but I used an &lt;a href=&quot;http://arduino.cc/en/Main/ArduinoBoardUno&quot;&gt;Arduino Uno&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Different coloured jumper wires&lt;/li&gt;
-&lt;li&gt;A potentiometer&lt;/li&gt;
+&lt;li&gt;A 16x2 LCD display, I used the &lt;a href=&quot;http://arduino.cc/documents/datasheets/LCD-WH1602B-TMI.pdf&quot;&gt;LCD-WH1602B&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;A bunch of jumper wires&lt;/li&gt;
+&lt;li&gt;1 potentiometer&lt;/li&gt;
+&lt;li&gt;1 220-ohm resistor&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;hr&gt;
 
 &lt;h3&gt;So, why Arduino?&lt;/h3&gt;
 
-&lt;p&gt;Since any microcontroller board that is capable of running Node and has digital I/O pins will run this, I consider this project to be hardware agnostic to a certain extent. I chose the Arduino Uno as my first board because they have a great community, they&amp;#39;re easily extendable, and the boards are made in Italy under ethical conditions for a reasonable price. &lt;/p&gt;
+&lt;p&gt;Since any microcontroller board that is capable of running Node and has digital I/O pins will run this, I consider this project to be hardware agnostic to a certain extent. I chose Arduino foremost because they have a great community, they&amp;#39;re easily extendable, and the boards are made in Italy under ethical conditions for a reasonable price. &lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;float-right&quot; alt=&quot;Arduino Uno Version 3&quot; src=&quot;http://arduino.cc/en/uploads/Main/ArduinoUno_R3_Front_450px.jpg&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;I started out by doing a few small projects in C++ in the Arduino IDE so I could understand a little bit better how these boards work before adding layers of abstraction with JS and its hardware libraries.&lt;/p&gt;
+
+&lt;p&gt;Once I got a taste of Arduino&amp;#39;s capabilities on Node, it was hard to look back. There are however by default some drawbacks to Node. When you upload a C++ sketch to Arduino it is able to boot from that sketch each time it&amp;#39;s powered on. A Node application will need to be fired externally on boot, but there are ways around that which I aim to explore in future articles.&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3&gt;First step: Wire it up&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloud.githubusercontent.com/assets/5748440/4158768/c1eaa2fe-3492-11e4-9c7c-1767bffd2e79.jpg&quot; alt=&quot;Arduino Wiring Diagram&quot; class=&quot;float-right&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;In this guide I&amp;#39;m assuming you&amp;#39;ve already made a few small things with an Arduino such as flashing an LED, using a light sensor, etc. I won&amp;#39;t cover any of the wiring basics, however I&amp;#39;ve included a wiring diagram to make things faster to get started. &lt;/p&gt;
+
+&lt;p&gt;If you&amp;#39;d like more information on setting up an LCD, you can visit Arduino&amp;#39;s tutorial &lt;a href=&quot;http://arduino.cc/en/Tutorial/LiquidCrystal&quot;&gt;here&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;In the JS file for the project I&amp;#39;ve included a comment indicating which pins on the LCD need to be connected to which pins of your Arduino. These can be changed in the code if you&amp;#39;d prefer a different pin configuration.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;// LCD pin name  RS  EN  DB4 DB5 DB6 DB7
+// Arduino pin # 12  11   5   4  3  2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+
+&lt;h3&gt;Second step: Get your Arduino ready for Node&lt;/h3&gt;
+
+&lt;p&gt;An Arduino will not be able to run a Node application until you sprinkle on some magic fairy dust called Firmata.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Connect your Arduino to your computer.&lt;/li&gt;
+&lt;li&gt;Open up the Arduino IDE.&lt;/li&gt;
+&lt;li&gt;Open the sketch under: File -&amp;gt; Examples -&amp;gt; Firmata -&amp;gt; StandardFirmata&lt;/li&gt;
+&lt;li&gt;Hit Upload&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;hr&gt;
+
+&lt;h3&gt;Third step: Set up your project folder&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;In your terminal mkdir a folder named &lt;em&gt;lcd-weather-display&lt;/em&gt; and cd into it.&lt;/li&gt;
+&lt;li&gt;Run &lt;code&gt;npm install request&lt;/code&gt; and &lt;code&gt;npm install johnny-five&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Make a new file called &lt;em&gt;lcd-weather-display.js&lt;/em&gt; and open it in your favorite code editor.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;hr&gt;
+
+&lt;h3&gt;Fourth step: Let&amp;#39;s code!&lt;/h3&gt;
+
+&lt;h4&gt;Setup&lt;/h4&gt;
+
+&lt;p&gt;Add variables and dependencies.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;    // For interfacing with Arduino
+var five = require(&amp;quot;johnny-five&amp;quot;),
+
+    // For making simple HTTP requests in Node
+    request = require(&amp;quot;request&amp;quot;), 
+
+    // Initialize a new Johnny-Five board
+    board = new five.Board(), 
+
+    // The # of rows on the LCD screen
+    numberRows = 2,
+
+    // The # of columns on the LCD screen
+    numberCols = 16,
+
+    // The city name to query
+    currentCity = &amp;quot;Montreal&amp;quot;,
+
+    // The country code for above city
+    countryCode = &amp;quot;CA&amp;quot;,
+
+    // &amp;quot;C&amp;quot; for Celsius, &amp;quot;F&amp;quot; for Fahrenheit
+    temperatureFormat = &amp;quot;C&amp;quot;;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Add a ready function for your Arduino, and initialize the lcd.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;// Johnny-Five comes with jQuery-esque
+// ready functions
+
+board.on(&amp;quot;ready&amp;quot;, function() {
+
+    // Initialize a new LCD through 
+    // Johnny-Five&amp;#39;s built in LCD library
+
+    var lcd = new five.LCD({
+
+        // LCD pin name  RS  EN  DB4 DB5 DB6 DB7
+        // Arduino pin # 12  11   5   4  3  2
+        pins: [ 12, 11, 5, 4, 3, 2 ],
+        rows: numberRows,
+        cols: numberCols
+
+    });
+
+
+    // Once the lcd is fired up...
+
+    lcd.on(&amp;quot;ready&amp;quot;, function() {
+        // Do awesome lcd things
+    });
+
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4&gt;LCD functions&lt;/h4&gt;
+
+&lt;p&gt;Once your lcd is ready you can control it really easily using functions like:
+&lt;br&gt;
+&lt;code&gt;lcd.clear(); // Remove everything from the screen&lt;/code&gt; &lt;br&gt;
+&lt;code&gt;lcd.setCursor(0,0); // Set the column, row to print from&lt;/code&gt; &lt;br&gt;
+&lt;code&gt;lcd.print(&amp;quot;Fetching Weather&amp;quot;); // Print accepts normal strings&lt;/code&gt; &lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;You can also make your own characters on screen and add them to the library which is pretty darn useful. I did this to make a better looking degree symbol.&lt;/p&gt;
+
+&lt;p&gt;If you&amp;#39;d like to practice making your own, you can build one visually with &lt;a href=&quot;http://www.quinapalus.com/hd44780udg.html&quot;&gt;this tool&lt;/a&gt;. When you&amp;#39;re finished creating, you can copy the decimal output and add it as an array to the &lt;code&gt;createChar&lt;/code&gt; function.&lt;/p&gt;
+
+&lt;p&gt;It would look like this: &lt;br&gt;
+&lt;code&gt;lcd.createChar(&amp;quot;characterName&amp;quot;, [4,10,4,0,0,0,0]);&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;lcd.useChar(&amp;quot;characterName&amp;quot;);&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;lcd.print(&amp;quot;:characterName:&amp;quot;);&lt;/code&gt;&lt;br&gt;
+&lt;strong&gt;Important:&lt;/strong&gt; Don&amp;#39;t forget to add a colon before and after when doing a &lt;code&gt;.print&lt;/code&gt; of your custom character.&lt;/p&gt;
+
+&lt;p&gt;When the lcd is ready you can clear the screen, set the cursor at (0,0) and print a &amp;quot;Fetching Weather&amp;quot; message before sending off the request to the API&lt;/p&gt;
+
+&lt;h4&gt;API request&lt;/h4&gt;
 </content>
  </entry>
  

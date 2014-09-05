@@ -81,9 +81,9 @@ a:focus {
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
-  margin-bottom: .5rem;
+  margin-bottom: 1.5rem;
   font-weight: bold;
-  line-height: 1.25;
+  line-height: 1.45;
   color: #313131;
   text-rendering: optimizeLegibility;
 }
@@ -182,6 +182,7 @@ pre code {
 .credit {
   font-size: 70%;
   text-align: right;
+  line-height: 1.5rem;
 }
 
 /* Pygments via Jekyll */
@@ -439,7 +440,12 @@ a.pagination-item:hover {
 
 img.float-right {
   float: right;
-  padding: 0 0 1rem 1rem;
+  margin: 0 0 1.5rem 1.5rem;
   display: inline-block;
   box-sizing: border-box;
+}
+
+.footer img.float-right {
+  width: 1.5rem;
+  border-radius: 1.5rem;
 }

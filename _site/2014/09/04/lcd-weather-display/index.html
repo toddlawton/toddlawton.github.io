@@ -40,30 +40,153 @@
       <div class="post">
   <h1 class="post-title">Use NodeJS and Arduino to build a weather display</h1>
   <span class="post-date">04 Sep 2014</span>
-  <p><img class="float-right" src="https://cloud.githubusercontent.com/assets/5748440/4144068/ac68fe0a-33d7-11e4-88a1-762d0fdd8fea.gif"/></p>
+  <p><img class="float-right" alt="The finished LCD display in action" src="https://cloud.githubusercontent.com/assets/5748440/4144068/ac68fe0a-33d7-11e4-88a1-762d0fdd8fea.gif"/></p>
 
-<p>In this short guide I&#39;ll explain how I built my own desktop weather display on an <a href="http://arduino.cc/en/Main/ArduinoBoardUno">Arduino Uno</a> running Node and <a href="https://github.com/rwaldron/johnny-five">Johnny-Five</a>. This could serve as a nice desktop ornament that you can glance at when you wake up in the morning, and the principles in this guide will serve well in future projects that require some hardware interaction with an API. </p>
+<p>In this tutorial I&#39;ll explain how to build your own LCD weather display on an <a href="http://arduino.cc/en/Main/ArduinoBoardUno">Arduino Uno</a> running Node and <a href="https://github.com/rwaldron/johnny-five">Johnny-Five</a>. This could serve as a nice desktop ornament that you can glance at when you wake up in the morning, and the principles in this guide will serve well in future projects that require hardware interaction with an API. </p>
 
-<p>This project will use is the <a href="http://openweathermap.org/API">OpenWeatherMap API</a>.</p>
+<p>This project will use is the pretty awesome <a href="http://openweathermap.org/API">OpenWeatherMap API</a>.</p>
 
 <hr>
 
-<p>You&#39;ll need the following things before starting:</p>
+<h3>Gather up:</h3>
 
 <ul>
-<li>A 16x2 LCD display, I used the <a href="http://arduino.cc/documents/datasheets/LCD-WH1602B-TMI.pdf">LCD-WH1602B</a></li>
 <li>An Arduino board, many will work with this project, but I used an <a href="http://arduino.cc/en/Main/ArduinoBoardUno">Arduino Uno</a></li>
-<li>Different coloured jumper wires</li>
-<li>A potentiometer</li>
+<li>A 16x2 LCD display, I used the <a href="http://arduino.cc/documents/datasheets/LCD-WH1602B-TMI.pdf">LCD-WH1602B</a></li>
+<li>A bunch of jumper wires</li>
+<li>1 potentiometer</li>
+<li>1 220-ohm resistor</li>
 </ul>
 
 <hr>
 
 <h3>So, why Arduino?</h3>
 
-<p>Since any microcontroller board that is capable of running Node and has digital I/O pins will run this, I consider this project to be hardware agnostic to a certain extent. I chose the Arduino Uno as my first board because they have a great community, they&#39;re easily extendable, and the boards are made in Italy under ethical conditions for a reasonable price. </p>
+<p>Since any microcontroller board that is capable of running Node and has digital I/O pins will run this, I consider this project to be hardware agnostic to a certain extent. I chose Arduino foremost because they have a great community, they&#39;re easily extendable, and the boards are made in Italy under ethical conditions for a reasonable price. </p>
+
+<p><img class="float-right" alt="Arduino Uno Version 3" src="http://arduino.cc/en/uploads/Main/ArduinoUno_R3_Front_450px.jpg" /></p>
 
 <p>I started out by doing a few small projects in C++ in the Arduino IDE so I could understand a little bit better how these boards work before adding layers of abstraction with JS and its hardware libraries.</p>
+
+<p>Once I got a taste of Arduino&#39;s capabilities on Node, it was hard to look back. There are however by default some drawbacks to Node. When you upload a C++ sketch to Arduino it is able to boot from that sketch each time it&#39;s powered on. A Node application will need to be fired externally on boot, but there are ways around that which I aim to explore in future articles.</p>
+
+<hr>
+
+<h3>First step: Wire it up</h3>
+
+<p><img src="https://cloud.githubusercontent.com/assets/5748440/4158768/c1eaa2fe-3492-11e4-9c7c-1767bffd2e79.jpg" alt="Arduino Wiring Diagram" class="float-right"></p>
+
+<p>In this guide I&#39;m assuming you&#39;ve already made a few small things with an Arduino such as flashing an LED, using a light sensor, etc. I won&#39;t cover any of the wiring basics, however I&#39;ve included a wiring diagram to make things faster to get started. </p>
+
+<p>If you&#39;d like more information on setting up an LCD, you can visit Arduino&#39;s tutorial <a href="http://arduino.cc/en/Tutorial/LiquidCrystal">here</a></p>
+
+<p>In the JS file for the project I&#39;ve included a comment indicating which pins on the LCD need to be connected to which pins of your Arduino. These can be changed in the code if you&#39;d prefer a different pin configuration.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">// LCD pin name  RS  EN  DB4 DB5 DB6 DB7
+// Arduino pin # 12  11   5   4  3  2
+</code></pre></div>
+<hr>
+
+<h3>Second step: Get your Arduino ready for Node</h3>
+
+<p>An Arduino will not be able to run a Node application until you sprinkle on some magic fairy dust called Firmata.</p>
+
+<ol>
+<li>Connect your Arduino to your computer.</li>
+<li>Open up the Arduino IDE.</li>
+<li>Open the sketch under: File -&gt; Examples -&gt; Firmata -&gt; StandardFirmata</li>
+<li>Hit Upload</li>
+</ol>
+
+<hr>
+
+<h3>Third step: Set up your project folder</h3>
+
+<ol>
+<li>In your terminal mkdir a folder named <em>lcd-weather-display</em> and cd into it.</li>
+<li>Run <code>npm install request</code> and <code>npm install johnny-five</code>.</li>
+<li>Make a new file called <em>lcd-weather-display.js</em> and open it in your favorite code editor.</li>
+</ol>
+
+<hr>
+
+<h3>Fourth step: Let&#39;s code!</h3>
+
+<h4>Setup</h4>
+
+<p>Add variables and dependencies.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">    // For interfacing with Arduino
+var five = require(&quot;johnny-five&quot;),
+
+    // For making simple HTTP requests in Node
+    request = require(&quot;request&quot;), 
+
+    // Initialize a new Johnny-Five board
+    board = new five.Board(), 
+
+    // The # of rows on the LCD screen
+    numberRows = 2,
+
+    // The # of columns on the LCD screen
+    numberCols = 16,
+
+    // The city name to query
+    currentCity = &quot;Montreal&quot;,
+
+    // The country code for above city
+    countryCode = &quot;CA&quot;,
+
+    // &quot;C&quot; for Celsius, &quot;F&quot; for Fahrenheit
+    temperatureFormat = &quot;C&quot;;
+</code></pre></div>
+<p>Add a ready function for your Arduino, and initialize the lcd.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">// Johnny-Five comes with jQuery-esque
+// ready functions
+
+board.on(&quot;ready&quot;, function() {
+
+    // Initialize a new LCD through 
+    // Johnny-Five&#39;s built in LCD library
+
+    var lcd = new five.LCD({
+
+        // LCD pin name  RS  EN  DB4 DB5 DB6 DB7
+        // Arduino pin # 12  11   5   4  3  2
+        pins: [ 12, 11, 5, 4, 3, 2 ],
+        rows: numberRows,
+        cols: numberCols
+
+    });
+
+
+    // Once the lcd is fired up...
+
+    lcd.on(&quot;ready&quot;, function() {
+        // Do awesome lcd things
+    });
+
+});
+</code></pre></div>
+<h4>LCD functions</h4>
+
+<p>Once your lcd is ready you can control it really easily using functions like:
+<br>
+<code>lcd.clear(); // Remove everything from the screen</code> <br>
+<code>lcd.setCursor(0,0); // Set the column, row to print from</code> <br>
+<code>lcd.print(&quot;Fetching Weather&quot;); // Print accepts normal strings</code> <br></p>
+
+<p>You can also make your own characters on screen and add them to the library which is pretty darn useful. I did this to make a better looking degree symbol.</p>
+
+<p>If you&#39;d like to practice making your own, you can build one visually with <a href="http://www.quinapalus.com/hd44780udg.html">this tool</a>. When you&#39;re finished creating, you can copy the decimal output and add it as an array to the <code>createChar</code> function.</p>
+
+<p>It would look like this: <br>
+<code>lcd.createChar(&quot;characterName&quot;, [4,10,4,0,0,0,0]);</code><br>
+<code>lcd.useChar(&quot;characterName&quot;);</code><br>
+<code>lcd.print(&quot;:characterName:&quot;);</code><br>
+<strong>Important:</strong> Don&#39;t forget to add a colon before and after when doing a <code>.print</code> of your custom character.</p>
+
+<p>When the lcd is ready you can clear the screen, set the cursor at (0,0) and print a &quot;Fetching Weather&quot; message before sending off the request to the API</p>
+
+<h4>API request</h4>
 
 </div>
 
@@ -76,6 +199,7 @@
 
 
       <div class="footer">
+      	<img class="float-right" src="http://www.gravatar.com/avatar/6397cc48820bd2e7735c7008574d4b3d.png" alt="@toddlawton">
         <p class="credit">
         a <a href="https://twitter.com/toddlawton">@toddlawton</a> thing
         </p>
