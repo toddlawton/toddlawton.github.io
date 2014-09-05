@@ -76,7 +76,7 @@ An Arduino will not be able to run a Node application until you sprinkle on some
 
 Add variables and dependencies.
 
-```
+```javascript
 	// For interfacing with Arduino
 var five = require("johnny-five"),
 
@@ -104,7 +104,7 @@ var five = require("johnny-five"),
 
 Add a ready function for your Arduino, and initialize the lcd.
 
-```
+```javascript
 
 // Johnny-Five comes with jQuery-esque
 // ready functions
@@ -158,7 +158,7 @@ When the lcd is ready you can clear the screen, set the cursor at (0,0) and prin
 
 Once the lcd is ready, we'll send a GET request to OpenWeatherMap.
 
-```
+```javascript
 lcd.on("ready", function() {
 
 	// Add visual feedback that the LCD
@@ -182,7 +182,7 @@ lcd.on("ready", function() {
 
 Upon inspection of the JSON response that we receive, we'll notice that the temperatures are all in Kelvins (oh noes!). Since most people are accustomed to reading the temperature in Celsius or Fahrenheit, let's include utility functions to take care of the conversion. We can place these outside of the board's ready function.
 
-```
+```javascript
 function kelvinToCelsius(input) {
 	input -= 273.15;
 	return parseInt(input);
@@ -199,7 +199,7 @@ When you've got all of the data you need, call a function to execute the display
 
 We'll pass any Kelvin measurements through our utility functions depending on the temperature format variable set at the top, or throw an error if the format is invalid.
 
-```
+```javascript
 lcd.on("ready", function() {
 	lcd.clear().setCursor(0,0).print("Fetching Weather");
 	request("http://api.openweathermap.org/data/2.5/weather?q="+currentCity+","+countryCode.toLowerCase()+"", function(error, response, body) {
@@ -252,7 +252,7 @@ Then we start an interval on our Arduino which controls the second line, that cy
 
 The second line message is decided by a very simple switch case statement with a counter that resets after the numberMessages is hit.
 
-```
+```javascript
 function fireItUp() {
 
 		// Here we see our custom degree
