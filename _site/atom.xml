@@ -1,222 +1,322 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
- <title>Poole</title>
- <link href="http://getpoole.com/atom.xml" rel="self"/>
- <link href="http://getpoole.com/"/>
- <updated>2014-09-04T10:45:37-04:00</updated>
- <id>http://getpoole.com</id>
+ <title>Node Disassemble!</title>
+ <link href="http://www.node-disassemble.com/atom.xml" rel="self"/>
+ <link href="http://www.node-disassemble.com/"/>
+ <updated>2014-09-04T23:33:43-04:00</updated>
+ <id>http://www.node-disassemble.com</id>
  <author>
-   <name>Mark Otto</name>
-   <email>markdotto@gmail.com</email>
+   <name>Todd Lawton Beauchamp</name>
+   <email>toddbee@gmail.com</email>
  </author>
 
  
  <entry>
-   <title>Introducing Poole</title>
-   <link href="http://getpoole.com//2014/01/02/introducing-poole/"/>
-   <updated>2014-01-02T00:00:00-05:00</updated>
-   <id>http://getpoole.com/2014/01/02/introducing-poole</id>
-   <content type="html">&lt;p&gt;&lt;em&gt;The Strange Case of Dr. Jekyll and Mr. Hyde&lt;/em&gt; tells the story of a lawyer investigating the connection of two persons, Dr. Henry Jekyll and Mr. Edward Hyde. Chief among the novel&amp;#39;s supporting cast is a man by the name of Mr. Poole, Dr. Jekyll&amp;#39;s loyal butler.&lt;/p&gt;
+   <title>Use NodeJS and Arduino to build a weather display</title>
+   <link href="http://www.node-disassemble.com//2014/09/04/lcd-weather-display/"/>
+   <updated>2014-09-04T00:00:00-04:00</updated>
+   <id>http://www.node-disassemble.com/2014/09/04/lcd-weather-display</id>
+   <content type="html">&lt;p&gt;&lt;img class=&quot;float-right&quot; alt=&quot;The finished LCD display in action&quot; src=&quot;https://cloud.githubusercontent.com/assets/5748440/4144068/ac68fe0a-33d7-11e4-88a1-762d0fdd8fea.gif&quot;/&gt;&lt;/p&gt;
+
+&lt;p&gt;In this tutorial I&amp;#39;ll explain how to build your own LCD weather display on an &lt;a href=&quot;http://arduino.cc/en/Main/ArduinoBoardUno&quot;&gt;Arduino Uno&lt;/a&gt; running Node and &lt;a href=&quot;https://github.com/rwaldron/johnny-five&quot;&gt;Johnny-Five&lt;/a&gt;. This could serve as a nice desktop ornament that you can glance at when you wake up in the morning, and the principles in this guide will serve well in future projects that require hardware interaction with an API. &lt;/p&gt;
+
+&lt;p&gt;This project will use is the pretty awesome &lt;a href=&quot;http://openweathermap.org/API&quot;&gt;OpenWeatherMap API&lt;/a&gt;.&lt;/p&gt;
 
 &lt;hr&gt;
 
-&lt;p&gt;Poole is the butler for &lt;a href=&quot;http://jekyllrb.com&quot;&gt;Jekyll&lt;/a&gt;, the static site generator. It&amp;#39;s designed and developed by &lt;a href=&quot;https://twitter.com/mdo&quot;&gt;@mdo&lt;/a&gt; to provide a clear and concise foundational setup for any Jekyll site. It does so by furnishing a full vanilla Jekyll install with example templates, pages, posts, and styles.&lt;/p&gt;
-
-&lt;p&gt;There are currently two themes built on Poole:&lt;/p&gt;
+&lt;h3&gt;Gather up:&lt;/h3&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;http://hyde.getpoole.com&quot;&gt;Hyde&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://lanyon.getpoole.com&quot;&gt;Lanyon&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;An Arduino board, many will work with this project, but I used an &lt;a href=&quot;http://arduino.cc/en/Main/ArduinoBoardUno&quot;&gt;Arduino Uno&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;A 16x2 LCD display, I used the &lt;a href=&quot;http://arduino.cc/documents/datasheets/LCD-WH1602B-TMI.pdf&quot;&gt;LCD-WH1602B&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;A bunch of jumper wires&lt;/li&gt;
+&lt;li&gt;1 potentiometer&lt;/li&gt;
+&lt;li&gt;1 220-ohm resistor&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;Learn more and contribute on &lt;a href=&quot;https://github.com/poole&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;hr&gt;
 
-&lt;h3&gt;What&amp;#39;s included&lt;/h3&gt;
+&lt;h3&gt;So, why Arduino?&lt;/h3&gt;
 
-&lt;p&gt;Poole is a streamlined Jekyll site designed and built as a foundation for building more meaningful themes. Poole, and every theme built on it, includes the following:&lt;/p&gt;
+&lt;p&gt;Since any microcontroller board that is capable of running Node and has digital I/O pins will run this, I consider this project to be hardware agnostic to a certain extent. I chose Arduino foremost because they have a great community, they&amp;#39;re easily extendable, and the boards are made in Italy under ethical conditions for a reasonable price. &lt;/p&gt;
 
-&lt;ul&gt;
-&lt;li&gt;Complete Jekyll setup included (layouts, config, &lt;a href=&quot;/404.html&quot;&gt;404&lt;/a&gt;, &lt;a href=&quot;/atom.xml&quot;&gt;RSS feed&lt;/a&gt;, posts, and &lt;a href=&quot;/about&quot;&gt;example page&lt;/a&gt;)&lt;/li&gt;
-&lt;li&gt;Mobile friendly design and development&lt;/li&gt;
-&lt;li&gt;Easily scalable text and component sizing with &lt;code&gt;rem&lt;/code&gt; units in the CSS&lt;/li&gt;
-&lt;li&gt;Support for a wide gamut of HTML elements&lt;/li&gt;
-&lt;li&gt;Related posts (time-based, because Jekyll) below each post&lt;/li&gt;
-&lt;li&gt;Syntax highlighting, courtesy Pygments (the Python-based code snippet highlighter)&lt;/li&gt;
-&lt;/ul&gt;
+&lt;p&gt;&lt;img class=&quot;float-right&quot; alt=&quot;Arduino Uno Version 3&quot; src=&quot;http://arduino.cc/en/uploads/Main/ArduinoUno_R3_Front_450px.jpg&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Additional features are available in individual themes.&lt;/p&gt;
+&lt;p&gt;I started out by doing a few small projects in C++ in the Arduino IDE so I could understand a little bit better how these boards work before adding layers of abstraction with JS and its hardware libraries.&lt;/p&gt;
 
-&lt;h3&gt;Browser support&lt;/h3&gt;
+&lt;p&gt;Once I got a taste of Arduino&amp;#39;s capabilities on Node, it was hard to look back. There are however by default some drawbacks to Node. When you upload a C++ sketch to Arduino it is able to boot from that sketch each time it&amp;#39;s powered on. A Node application will need to be fired externally on boot, but there are ways around that which I aim to explore in future articles.&lt;/p&gt;
 
-&lt;p&gt;Poole and it&amp;#39;s themes are by preference a forward-thinking project. In addition to the latest versions of Chrome, Safari (mobile and desktop), and Firefox, it is only compatible with Internet Explorer 9 and above.&lt;/p&gt;
+&lt;hr&gt;
 
-&lt;h3&gt;Download&lt;/h3&gt;
+&lt;h3&gt;First step: Wire it up&lt;/h3&gt;
 
-&lt;p&gt;Poole is developed on and hosted with GitHub. Head to the &lt;a href=&quot;https://github.com/poole/poole&quot;&gt;GitHub repository&lt;/a&gt; for downloads, bug reports, and features requests.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://cloud.githubusercontent.com/assets/5748440/4158768/c1eaa2fe-3492-11e4-9c7c-1767bffd2e79.jpg&quot; alt=&quot;Arduino Wiring Diagram&quot; class=&quot;float-right&quot;&gt;&lt;/p&gt;
 
-&lt;p&gt;Thanks!&lt;/p&gt;
-</content>
- </entry>
- 
- <entry>
-   <title>Example content</title>
-   <link href="http://getpoole.com//2014/01/01/example-content/"/>
-   <updated>2014-01-01T00:00:00-05:00</updated>
-   <id>http://getpoole.com/2014/01/01/example-content</id>
-   <content type="html">&lt;div class=&quot;message&quot;&gt;
-  Howdy! This is an example blog post that shows several types of HTML content supported in this theme.
-&lt;/div&gt;
+&lt;p&gt;In this guide I&amp;#39;m assuming you&amp;#39;ve already made a few small things with an Arduino such as flashing an LED, using a light sensor, etc. I won&amp;#39;t cover any of the wiring basics, however I&amp;#39;ve included a wiring diagram to make things faster to get started. &lt;/p&gt;
 
-&lt;p&gt;Cum sociis natoque penatibus et magnis &lt;a href=&quot;#&quot;&gt;dis parturient montes&lt;/a&gt;, nascetur ridiculus mus. &lt;em&gt;Aenean eu leo quam.&lt;/em&gt; Pellentesque ornare sem lacinia quam venenatis vestibulum. Sed posuere consectetur est at lobortis. Cras mattis consectetur purus sit amet fermentum.&lt;/p&gt;
+&lt;p&gt;If you&amp;#39;d like more information on setting up an LCD, you can visit Arduino&amp;#39;s tutorial &lt;a href=&quot;http://arduino.cc/en/Tutorial/LiquidCrystal&quot;&gt;here&lt;/a&gt;&lt;/p&gt;
 
-&lt;blockquote&gt;
-&lt;p&gt;Curabitur blandit tempus porttitor. Nullam quis risus eget urna mollis ornare vel eu leo. Nullam id dolor id nibh ultricies vehicula ut id elit.&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;In the JS file for the project I&amp;#39;ve included a comment indicating which pins on the LCD need to be connected to which pins of your Arduino. These can be changed in the code if you&amp;#39;d prefer a different pin configuration.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;// LCD pin name  RS  EN  DB4 DB5 DB6 DB7
+// Arduino pin # 12  11   5   4  3  2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
 
-&lt;p&gt;Etiam porta &lt;strong&gt;sem malesuada magna&lt;/strong&gt; mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.&lt;/p&gt;
+&lt;h3&gt;Second step: Get your Arduino ready for Node&lt;/h3&gt;
 
-&lt;h2&gt;Inline HTML elements&lt;/h2&gt;
-
-&lt;p&gt;HTML defines a long list of available inline tags, a complete list of which can be found on the &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/HTML/Element&quot;&gt;Mozilla Developer Network&lt;/a&gt;.&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;To bold text&lt;/strong&gt;, use &lt;code&gt;&amp;lt;strong&amp;gt;&lt;/code&gt;.&lt;/li&gt;
-&lt;li&gt;&lt;em&gt;To italicize text&lt;/em&gt;, use &lt;code&gt;&amp;lt;em&amp;gt;&lt;/code&gt;.&lt;/li&gt;
-&lt;li&gt;Abbreviations, like &lt;abbr title=&quot;HyperText Markup Langage&quot;&gt;HTML&lt;/abbr&gt; should use &lt;code&gt;&amp;lt;abbr&amp;gt;&lt;/code&gt;, with an optional &lt;code&gt;title&lt;/code&gt; attribute for the full phrase.&lt;/li&gt;
-&lt;li&gt;Citations, like &lt;cite&gt;&amp;mdash; Mark otto&lt;/cite&gt;, should use &lt;code&gt;&amp;lt;cite&amp;gt;&lt;/code&gt;.&lt;/li&gt;
-&lt;li&gt;&lt;del&gt;Deleted&lt;/del&gt; text should use &lt;code&gt;&amp;lt;del&amp;gt;&lt;/code&gt; and &lt;ins&gt;inserted&lt;/ins&gt; text should use &lt;code&gt;&amp;lt;ins&amp;gt;&lt;/code&gt;.&lt;/li&gt;
-&lt;li&gt;Superscript &lt;sup&gt;text&lt;/sup&gt; uses &lt;code&gt;&amp;lt;sup&amp;gt;&lt;/code&gt; and subscript &lt;sub&gt;text&lt;/sub&gt; uses &lt;code&gt;&amp;lt;sub&amp;gt;&lt;/code&gt;.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Most of these elements are styled by browsers with few modifications on our part.&lt;/p&gt;
-
-&lt;h2&gt;Heading&lt;/h2&gt;
-
-&lt;p&gt;Vivamus sagittis lacus vel augue rutrum faucibus dolor auctor. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.&lt;/p&gt;
-
-&lt;h3&gt;Code&lt;/h3&gt;
-
-&lt;p&gt;Cum sociis natoque penatibus et magnis dis &lt;code&gt;code element&lt;/code&gt; montes, nascetur ridiculus mus.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// Example can be run directly in your JavaScript console&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// Create a function that takes two arguments and returns the sum of those arguments&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;adder&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;a&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;b&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;return a + b&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// Call the function&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;adder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// &amp;gt; 8&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa.&lt;/p&gt;
-
-&lt;h3&gt;Gists via GitHub Pages&lt;/h3&gt;
-
-&lt;p&gt;Vestibulum id ligula porta felis euismod semper. Nullam quis risus eget urna mollis ornare vel eu leo. Donec sed odio dui.&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/5555251.js?file=gist.md&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec sed odio dui. Vestibulum id ligula porta felis euismod semper.&lt;/p&gt;
-
-&lt;h3&gt;Lists&lt;/h3&gt;
-
-&lt;p&gt;Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Praesent commodo cursus magna, vel scelerisque nisl consectetur et.&lt;/li&gt;
-&lt;li&gt;Donec id elit non mi porta gravida at eget metus.&lt;/li&gt;
-&lt;li&gt;Nulla vitae elit libero, a pharetra augue.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Donec ullamcorper nulla non metus auctor fringilla. Nulla vitae elit libero, a pharetra augue.&lt;/p&gt;
+&lt;p&gt;An Arduino will not be able to run a Node application until you sprinkle on some magic fairy dust called Firmata.&lt;/p&gt;
 
 &lt;ol&gt;
-&lt;li&gt;Vestibulum id ligula porta felis euismod semper.&lt;/li&gt;
-&lt;li&gt;Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.&lt;/li&gt;
-&lt;li&gt;Maecenas sed diam eget risus varius blandit sit amet non magna.&lt;/li&gt;
+&lt;li&gt;Connect your Arduino to your computer.&lt;/li&gt;
+&lt;li&gt;Open up the Arduino IDE.&lt;/li&gt;
+&lt;li&gt;Open the sketch under: File -&amp;gt; Examples -&amp;gt; Firmata -&amp;gt; StandardFirmata&lt;/li&gt;
+&lt;li&gt;Hit Upload&lt;/li&gt;
 &lt;/ol&gt;
-
-&lt;p&gt;Cras mattis consectetur purus sit amet fermentum. Sed posuere consectetur est at lobortis.&lt;/p&gt;
-
-&lt;dl&gt;
-  &lt;dt&gt;HyperText Markup Language (HTML)&lt;/dt&gt;
-  &lt;dd&gt;The language used to describe and define the content of a Web page&lt;/dd&gt;
-
-  &lt;dt&gt;Cascading Style Sheets (CSS)&lt;/dt&gt;
-  &lt;dd&gt;Used to describe the appearance of Web content&lt;/dd&gt;
-
-  &lt;dt&gt;JavaScript (JS)&lt;/dt&gt;
-  &lt;dd&gt;The programming language used to build advanced Web sites and applications&lt;/dd&gt;
-&lt;/dl&gt;
-
-&lt;p&gt;Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Nullam quis risus eget urna mollis ornare vel eu leo.&lt;/p&gt;
-
-&lt;h3&gt;Images&lt;/h3&gt;
-
-&lt;p&gt;Quisque consequat sapien eget quam rhoncus, sit amet laoreet diam tempus. Aliquam aliquam metus erat, a pulvinar turpis suscipit at.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://placehold.it/800x400&quot; alt=&quot;placeholder&quot; title=&quot;Large example image&quot;&gt;
-&lt;img src=&quot;http://placehold.it/400x200&quot; alt=&quot;placeholder&quot; title=&quot;Medium example image&quot;&gt;
-&lt;img src=&quot;http://placehold.it/200x200&quot; alt=&quot;placeholder&quot; title=&quot;Small example image&quot;&gt;&lt;/p&gt;
-
-&lt;h3&gt;Tables&lt;/h3&gt;
-
-&lt;p&gt;Aenean lacinia bibendum nulla sed consectetur. Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Name&lt;/th&gt;
-      &lt;th&gt;Upvotes&lt;/th&gt;
-      &lt;th&gt;Downvotes&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tfoot&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Totals&lt;/td&gt;
-      &lt;td&gt;21&lt;/td&gt;
-      &lt;td&gt;23&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tfoot&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Alice&lt;/td&gt;
-      &lt;td&gt;10&lt;/td&gt;
-      &lt;td&gt;11&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Bob&lt;/td&gt;
-      &lt;td&gt;4&lt;/td&gt;
-      &lt;td&gt;3&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Charlie&lt;/td&gt;
-      &lt;td&gt;7&lt;/td&gt;
-      &lt;td&gt;9&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;Nullam id dolor id nibh ultricies vehicula ut id elit. Sed posuere consectetur est at lobortis. Nullam quis risus eget urna mollis ornare vel eu leo.&lt;/p&gt;
 
 &lt;hr&gt;
 
-&lt;p&gt;Want to see something else added? &lt;a href=&quot;https://github.com/poole/poole/issues/new&quot;&gt;Open an issue.&lt;/a&gt;&lt;/p&gt;
-</content>
- </entry>
- 
- <entry>
-   <title>What's Jekyll?</title>
-   <link href="http://getpoole.com//2013/12/31/whats-jekyll/"/>
-   <updated>2013-12-31T00:00:00-05:00</updated>
-   <id>http://getpoole.com/2013/12/31/whats-jekyll</id>
-   <content type="html">&lt;p&gt;&lt;a href=&quot;http://jekyllrb.com&quot;&gt;Jekyll&lt;/a&gt; is a static site generator, an open-source tool for creating simple yet powerful websites of all shapes and sizes. From &lt;a href=&quot;https://github.com/jekyll/jekyll/blob/master/README.markdown&quot;&gt;the project&amp;#39;s readme&lt;/a&gt;:&lt;/p&gt;
+&lt;h3&gt;Third step: Set up your project folder&lt;/h3&gt;
 
-&lt;blockquote&gt;
-&lt;p&gt;Jekyll is a simple, blog aware, static site generator. It takes a template directory [...] and spits out a complete, static website suitable for serving with Apache or your favorite web server. This is also the engine behind GitHub Pages, which you can use to host your project’s page or blog right here from GitHub.&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;In your terminal mkdir a folder named &lt;em&gt;lcd-weather-display&lt;/em&gt; and cd into it.&lt;/li&gt;
+&lt;li&gt;Run &lt;code&gt;npm install request&lt;/code&gt; and &lt;code&gt;npm install johnny-five&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Make a new file called &lt;em&gt;lcd-weather-display.js&lt;/em&gt; and open it in your favorite code editor.&lt;/li&gt;
+&lt;/ol&gt;
 
-&lt;p&gt;It&amp;#39;s an immensely useful tool. Find out more by &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;visiting the project on GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;hr&gt;
+
+&lt;h3&gt;Fourth step: Let&amp;#39;s code!&lt;/h3&gt;
+
+&lt;h4&gt;Setup&lt;/h4&gt;
+
+&lt;p&gt;Add variables and dependencies.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;    // For interfacing with Arduino
+var five = require(&amp;quot;johnny-five&amp;quot;),
+
+    // For making simple HTTP requests in Node
+    request = require(&amp;quot;request&amp;quot;), 
+
+    // Initialize a new Johnny-Five board
+    board = new five.Board(), 
+
+    // The # of rows on the LCD screen
+    numberRows = 2,
+
+    // The # of columns on the LCD screen
+    numberCols = 16,
+
+    // The city name to query
+    currentCity = &amp;quot;Montreal&amp;quot;,
+
+    // The country code for above city
+    countryCode = &amp;quot;CA&amp;quot;,
+
+    // &amp;quot;C&amp;quot; for Celsius, &amp;quot;F&amp;quot; for Fahrenheit
+    temperatureFormat = &amp;quot;C&amp;quot;;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Add a ready function for your Arduino, and initialize the lcd.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;// Johnny-Five comes with jQuery-esque
+// ready functions
+
+board.on(&amp;quot;ready&amp;quot;, function() {
+
+    // Initialize a new LCD through 
+    // Johnny-Five&amp;#39;s built in LCD library
+
+    var lcd = new five.LCD({
+
+        // LCD pin name  RS  EN  DB4 DB5 DB6 DB7
+        // Arduino pin # 12  11   5   4  3  2
+        pins: [ 12, 11, 5, 4, 3, 2 ],
+        rows: numberRows,
+        cols: numberCols
+
+    });
+
+
+    // Once the lcd is fired up...
+
+    lcd.on(&amp;quot;ready&amp;quot;, function() {
+        // Do awesome lcd things
+    });
+
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4&gt;LCD functions&lt;/h4&gt;
+
+&lt;p&gt;Once your lcd is ready you can control it really easily using functions like:
+&lt;br&gt;
+&lt;code&gt;lcd.clear(); // Remove everything from the screen&lt;/code&gt; &lt;br&gt;
+&lt;code&gt;lcd.setCursor(0,0); // Set the column, row to print from&lt;/code&gt; &lt;br&gt;
+&lt;code&gt;lcd.print(&amp;quot;Fetching Weather&amp;quot;); // Print accepts normal strings&lt;/code&gt; &lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;You can also make your own characters on screen and add them to the library which is pretty darn useful. I did this to make a better looking degree symbol.&lt;/p&gt;
+
+&lt;p&gt;If you&amp;#39;d like to practice making your own, you can build one visually with &lt;a href=&quot;http://www.quinapalus.com/hd44780udg.html&quot;&gt;this tool&lt;/a&gt;. When you&amp;#39;re finished creating, you can copy the decimal output and add it as an array to the &lt;code&gt;createChar&lt;/code&gt; function.&lt;/p&gt;
+
+&lt;p&gt;It would look like this: &lt;br&gt;
+&lt;code&gt;lcd.createChar(&amp;quot;characterName&amp;quot;, [4,10,4,0,0,0,0]);&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;lcd.useChar(&amp;quot;characterName&amp;quot;);&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;lcd.print(&amp;quot;:characterName:&amp;quot;);&lt;/code&gt;&lt;br&gt;
+&lt;strong&gt;Important:&lt;/strong&gt; Don&amp;#39;t forget to add a colon before and after when doing a &lt;code&gt;.print&lt;/code&gt; of your custom character.&lt;/p&gt;
+
+&lt;p&gt;When the lcd is ready you can clear the screen, set the cursor at (0,0) and print a &amp;quot;Fetching Weather&amp;quot; message before sending off the request to the API. Chances are this will flash really quickly, but visual feedback like this are great when on a slow connection.&lt;/p&gt;
+
+&lt;h4&gt;API request&lt;/h4&gt;
+
+&lt;p&gt;Once the lcd is ready, we&amp;#39;ll send a GET request to OpenWeatherMap.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;lcd.on(&amp;quot;ready&amp;quot;, function() {
+
+    // Add visual feedback that the LCD
+    // is ready and about to fetch data.
+
+    lcd.clear().setCursor(0,0).print(&amp;quot;Fetching Weather&amp;quot;);
+
+
+    // Fire a request to the API, 
+    // passing in your variables currentCity
+    // and countryCode &amp;lt;-must be lowercase
+
+    request(&amp;quot;http://api.openweathermap.org/data/2.5/weather?q=&amp;quot;+currentCity+&amp;quot;,&amp;quot;+countryCode.toLowerCase()+&amp;quot;&amp;quot;, function(error, response, body) {
+
+        // The contents of this function
+        // will fire on a successful GET.
+
+    });
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Upon inspection of the JSON response that we receive, we&amp;#39;ll notice that the temperatures are all in Kelvins (oh noes!). Since most people are accustomed to reading the temperature in Celsius or Fahrenheit, let&amp;#39;s include utility functions to take care of the conversion. We can place these outside of the board&amp;#39;s ready function.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;function kelvinToCelsius(input) {
+    input -= 273.15;
+    return parseInt(input);
+}
+
+function kelvinToFahrenheit(input) {
+    input = (input - 273.15) * 1.8000 + 32.00;
+    return parseInt(input);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The weather data in the response can now be stored in variables to be sent to the LCD screen.
+When you&amp;#39;ve got all of the data you need, call a function to execute the display loop. As a classic StarCraft fan, I called my function fireItUp().&lt;/p&gt;
+
+&lt;p&gt;We&amp;#39;ll pass any Kelvin measurements through our utility functions depending on the temperature format variable set at the top, or throw an error if the format is invalid.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;lcd.on(&amp;quot;ready&amp;quot;, function() {
+    lcd.clear().setCursor(0,0).print(&amp;quot;Fetching Weather&amp;quot;);
+    request(&amp;quot;http://api.openweathermap.org/data/2.5/weather?q=&amp;quot;+currentCity+&amp;quot;,&amp;quot;+countryCode.toLowerCase()+&amp;quot;&amp;quot;, function(error, response, body) {
+
+        // Send a message back to the
+        // terminal if great success (yakshemash).
+
+        console.log(&amp;quot;Request Successful&amp;quot;);
+
+        weatherData = JSON.parse(body);
+
+        city = weatherData.name;
+
+        if (temperatureFormat === &amp;quot;C&amp;quot;) {
+
+            // Store the current temperature, 
+            // High and Low for the day.
+
+            temperature = kelvinToCelsius(weatherData.main.temp);
+            temperatureLow = kelvinToCelsius(weatherData.main.temp_min);
+            temperatureHigh = kelvinToCelsius(weatherData.main.temp_max);
+
+        } else if (temperatureFormat === &amp;quot;F&amp;quot;) {
+
+            temperature = kelvinToFahrenheit(weatherData.main.temp);
+            temperatureLow = kelvinToFahrenheit(weatherData.main.temp_min);
+            temperatureHigh = kelvinToFahrenheit(weatherData.main.temp_max);
+
+        } else {
+
+            throw &amp;quot;Invalid Temperature Format!&amp;quot;;
+
+        }
+
+        // This is a literal description
+        // such as mist, partly cloudy, etc.
+
+        description = weatherData.weather[0].description;
+
+        fireItUp(); // Send weather data to the screen
+    });
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Almost done. Whew! This is the part of the application that really handles what we&amp;#39;re seeing on the LCD. &lt;/p&gt;
+
+&lt;p&gt;As you&amp;#39;ll notice in the code below, we start off by creating our custom degree symbol mentioned earlier, and printing it to the LCD with the current temperature, as well as the current city on row 1.&lt;/p&gt;
+
+&lt;p&gt;Then we start an interval on our Arduino which controls the second line, that cycles through the weather description, high and low for the day, every 2000 milliseconds.&lt;/p&gt;
+
+&lt;p&gt;The second line message is decided by a very simple switch case statement with a counter that resets after the numberMessages is hit.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;function fireItUp() {
+
+        // Here we see our custom degree
+        // symbol come to life.
+
+        // Print the city name and current temp
+        // on row 1 of the LCD.
+
+        var degCharMap = [4,10,4,0,0,0,0]; // Make a custom degree symbol
+        lcd.createChar(&amp;quot;deg&amp;quot;, degCharMap); // Assign it as a usuable char in the lcd
+        lcd.useChar(&amp;quot;deg&amp;quot;); // Use dat sheet
+        lcd.clear().setCursor(0,0).print(city); // Write city name
+        lcd.setCursor(numberCols-4, 0).print(temperature).setCursor(numberCols-2, 0).print(&amp;quot;:deg:&amp;quot;).setCursor(numberCols-1, 0).print(temperatureFormat); // Write current temperature
+
+        // The second row will cycle through the 
+        // description, high and low temperatures.
+
+        var secondLine = 0, // 0 = Description, 1 = High Temp, 2 = Low Temp
+            numberMessages = 3;
+
+        // This loop function is rather self explanatory,
+        // it&amp;#39;s basically just a setInterval that works
+        // on your Arduino. 
+
+        board.loop( 2000, function() {
+
+
+            // It&amp;#39;s a good practice in this case to clear
+            // the entire line so that no leftover
+            // charactrs are present on the next draw.
+
+            lcd.setCursor(0, numberRows-1).print(&amp;quot;                &amp;quot;); // Clear the second line
+
+            switch(secondLine) {
+                case 0:
+                    lcd.setCursor(0, numberRows-1).print(description); // Describe current weather
+                    break;
+                case 1:
+                    lcd.setCursor(0, numberRows-1).print(&amp;quot;High of &amp;quot;+temperatureHigh+&amp;quot;:deg:&amp;quot;+temperatureFormat); // Display high temperature
+                    break;
+                case 2:
+                    lcd.setCursor(0, numberRows-1).print(&amp;quot;Low of &amp;quot;+temperatureLow+&amp;quot;:deg:&amp;quot;+temperatureFormat); // Display low temperature
+                    break;
+            }
+
+            secondLine++;
+
+            if (secondLine &amp;gt; numberMessages-1) {
+                secondLine = 0;
+            }
+        });
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+
+&lt;h3&gt;Fifth step: Fire it up&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;node lcd-weather-display&lt;/code&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;I hope this tutorial has been helpful, and that you push this concept even further to make super great awesome projects.&lt;/p&gt;
+
+&lt;p&gt;You can find the &lt;a href=&quot;https://github.com/toddlawton/arduino-nodebots/tree/master/node/lcd-weather-display&quot;&gt;finished code&lt;/a&gt; on GitHub. &lt;/p&gt;
+
+&lt;p&gt;If you&amp;#39;d like any help or to follow me on twitter, I&amp;#39;m &lt;a href=&quot;http://twitter.com/toddlawton&quot;&gt;@toddlawton&lt;/a&gt;. Thanks for reading!&lt;/p&gt;
 </content>
  </entry>
  
