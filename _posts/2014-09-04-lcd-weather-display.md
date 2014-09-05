@@ -7,7 +7,7 @@ title: Use NodeJS and Arduino to build a weather display
 
 In this tutorial I'll explain how to build your own LCD weather display on an [Arduino Uno](http://arduino.cc/en/Main/ArduinoBoardUno) running Node and [Johnny-Five](https://github.com/rwaldron/johnny-five). This could serve as a nice desktop ornament that you can glance at when you wake up in the morning, and the principles in this guide will serve well in future projects that require hardware interaction with an API. 
 
-This project will use is the pretty awesome [OpenWeatherMap API](http://openweathermap.org/API).
+This project will use the pretty awesome [OpenWeatherMap API](http://openweathermap.org/API).
 
 -----
 
