@@ -152,6 +152,163 @@ It would look like this: <br>
 ```lcd.print(":characterName:");```<br>
 **Important:** Don't forget to add a colon before and after when doing a `.print` of your custom character.
 
-When the lcd is ready you can clear the screen, set the cursor at (0,0) and print a "Fetching Weather" message before sending off the request to the API
+When the lcd is ready you can clear the screen, set the cursor at (0,0) and print a "Fetching Weather" message before sending off the request to the API. Chances are this will flash really quickly, but visual feedback like this are great when on a slow connection.
 
 #### API request
+
+Once the lcd is ready, we'll send a GET request to OpenWeatherMap.
+
+```
+lcd.on("ready", function() {
+
+	// Add visual feedback that the LCD
+	// is ready and about to fetch data.
+
+	lcd.clear().setCursor(0,0).print("Fetching Weather");
+
+
+	// Fire a request to the API, 
+	// passing in your variables currentCity
+	// and countryCode <-must be lowercase
+
+	request("http://api.openweathermap.org/data/2.5/weather?q="+currentCity+","+countryCode.toLowerCase()+"", function(error, response, body) {
+		
+		// The contents of this function
+		// will fire on a successful GET.
+
+	});
+});
+```
+
+Upon inspection of the JSON response that we receive, we'll notice that the temperatures are all in Kelvins (oh noes!). Since most people are accustomed to reading the temperature in Celsius or Fahrenheit, let's include utility functions to take care of the conversion. We can place these outside of the board's ready function.
+
+```
+function kelvinToCelsius(input) {
+	input -= 273.15;
+	return parseInt(input);
+}
+
+function kelvinToFahrenheit(input) {
+	input = (input - 273.15) * 1.8000 + 32.00;
+	return parseInt(input);
+}
+```
+
+The weather data in the response can now be stored in variables to be sent to the LCD screen.
+When you've got all of the data you need, call a function to execute the display loop. As a classic StarCraft fan, I called my function fireItUp().
+
+We'll pass any Kelvin measurements through our utility functions depending on the temperature format variable set at the top, or throw an error if the format is invalid.
+
+```
+lcd.on("ready", function() {
+	lcd.clear().setCursor(0,0).print("Fetching Weather");
+	request("http://api.openweathermap.org/data/2.5/weather?q="+currentCity+","+countryCode.toLowerCase()+"", function(error, response, body) {
+
+		// Send a message back to the
+		// terminal if great success (yakshemash).
+
+		console.log("Request Successful");
+
+		weatherData = JSON.parse(body);
+		
+		city = weatherData.name;
+		
+		if (temperatureFormat === "C") {
+			
+			// Store the current temperature, 
+			// High and Low for the day.
+
+			temperature = kelvinToCelsius(weatherData.main.temp);
+			temperatureLow = kelvinToCelsius(weatherData.main.temp_min);
+			temperatureHigh = kelvinToCelsius(weatherData.main.temp_max);
+
+		} else if (temperatureFormat === "F") {
+			
+			temperature = kelvinToFahrenheit(weatherData.main.temp);
+			temperatureLow = kelvinToFahrenheit(weatherData.main.temp_min);
+			temperatureHigh = kelvinToFahrenheit(weatherData.main.temp_max);
+
+		} else {
+
+			throw "Invalid Temperature Format!";
+
+		}
+
+		// This is a literal description
+		// such as mist, partly cloudy, etc.
+
+		description = weatherData.weather[0].description;
+
+		fireItUp(); // Send weather data to the screen
+	});
+});
+```
+
+Almost done. Whew! This is the part of the application that really handles what we're seeing on the LCD. 
+
+As you'll notice in the code below, we start off by creating our custom degree symbol mentioned earlier, and printing it to the LCD with the current temperature, as well as the current city on row 1.
+
+Then we start an interval on our Arduino which controls the second line, that cycles through the weather description, high and low for the day, every 2000 milliseconds.
+
+The second line message is decided by a very simple switch case statement with a counter that resets after the numberMessages is hit.
+
+```
+function fireItUp() {
+
+		// Here we see our custom degree
+		// symbol come to life.
+
+		// Print the city name and current temp
+		// on row 1 of the LCD.
+
+		var degCharMap = [4,10,4,0,0,0,0]; // Make a custom degree symbol
+		lcd.createChar("deg", degCharMap); // Assign it as a usuable char in the lcd
+		lcd.useChar("deg"); // Use dat sheet
+		lcd.clear().setCursor(0,0).print(city); // Write city name
+		lcd.setCursor(numberCols-4, 0).print(temperature).setCursor(numberCols-2, 0).print(":deg:").setCursor(numberCols-1, 0).print(temperatureFormat); // Write current temperature
+
+		// The second row will cycle through the 
+		// description, high and low temperatures.
+
+		var secondLine = 0, // 0 = Description, 1 = High Temp, 2 = Low Temp
+			numberMessages = 3;
+
+		// This loop function is rather self explanatory,
+		// it's basically just a setInterval that works
+		// on your Arduino.	
+
+		board.loop( 2000, function() {
+
+
+			// It's a good practice in this case to clear
+			// the entire line so that no leftover
+			// charactrs are present on the next draw.
+
+			lcd.setCursor(0, numberRows-1).print("                "); // Clear the second line
+
+			switch(secondLine) {
+				case 0:
+					lcd.setCursor(0, numberRows-1).print(description); // Describe current weather
+					break;
+				case 1:
+					lcd.setCursor(0, numberRows-1).print("High of "+temperatureHigh+":deg:"+temperatureFormat); // Display high temperature
+					break;
+				case 2:
+					lcd.setCursor(0, numberRows-1).print("Low of "+temperatureLow+":deg:"+temperatureFormat); // Display low temperature
+					break;
+			}
+
+			secondLine++;
+
+			if (secondLine > numberMessages-1) {
+				secondLine = 0;
+			}
+		});
+}
+```
+
+I hope this tutorial has been helpful, and that you push this even further! 
+
+You can find the code for this little project on GitHub [right here](https://github.com/toddlawton/arduino-nodebots/tree/master/node/lcd-weather-display). 
+
+If you'd like to follow me on twitter, I'm [@toddlawton](http://twitter.com/toddlawton)

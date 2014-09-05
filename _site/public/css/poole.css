@@ -448,4 +448,5 @@ img.float-right {
 .footer img.float-right {
   width: 1.5rem;
   border-radius: 1.5rem;
+  margin-left: 0.5rem;
 }
