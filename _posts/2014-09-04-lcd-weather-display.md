@@ -7,7 +7,7 @@ title: Use NodeJS and Arduino to build a weather display
 
 In this tutorial I'll explain how to build your own LCD weather display on an [Arduino Uno](http://arduino.cc/en/Main/ArduinoBoardUno) running Node and [Johnny-Five](https://github.com/rwaldron/johnny-five). This could serve as a nice desktop ornament that you can glance at when you wake up in the morning, and the principles in this guide will serve well in future projects that require hardware interaction with an API. 
 
-This project will use the pretty awesome [OpenWeatherMap API](http://openweathermap.org/API).
+This project will use the [OpenWeatherMap API](http://openweathermap.org/API).
 
 -----
 
@@ -180,7 +180,7 @@ lcd.on("ready", function() {
 });
 ```
 
-Upon inspection of the JSON response that we receive, we'll notice that the temperatures are all in Kelvins (oh noes!). Since most people are accustomed to reading the temperature in Celsius or Fahrenheit, let's include utility functions to take care of the conversion. We can place these outside of the board's ready function.
+Upon inspection of the JSON response that we receive, we'll notice that the temperatures are all in Kelvins. Since most people are accustomed to reading the temperature in Celsius or Fahrenheit, let's include utility functions to take care of the conversion. We can place these outside of the board's ready function.
 
 ```javascript
 function kelvinToCelsius(input) {
@@ -195,7 +195,7 @@ function kelvinToFahrenheit(input) {
 ```
 
 The weather data in the response can now be stored in variables to be sent to the LCD screen.
-When you've got all of the data you need, call a function to execute the display loop. As a classic StarCraft fan, I called my function fireItUp().
+When you've got all of the data you need, call a function to execute the display loop. I called my function fireItUp().
 
 We'll pass any Kelvin measurements through our utility functions depending on the temperature format variable set at the top, or throw an error if the format is invalid.
 
@@ -244,7 +244,7 @@ lcd.on("ready", function() {
 });
 ```
 
-Almost done. Whew! This is the part of the application that really handles what we're seeing on the LCD. 
+Almost done. This is the part of the application that really handles what we're seeing on the LCD. 
 
 As you'll notice in the code below, we start off by creating our custom degree symbol mentioned earlier, and printing it to the LCD with the current temperature, as well as the current city on row 1.
 

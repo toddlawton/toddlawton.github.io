@@ -53,7 +53,7 @@
 
 <p>In this tutorial I&#39;ll explain how to build your own LCD weather display on an <a href="http://arduino.cc/en/Main/ArduinoBoardUno">Arduino Uno</a> running Node and <a href="https://github.com/rwaldron/johnny-five">Johnny-Five</a>. This could serve as a nice desktop ornament that you can glance at when you wake up in the morning, and the principles in this guide will serve well in future projects that require hardware interaction with an API. </p>
 
-<p>This project will use the pretty awesome <a href="http://openweathermap.org/API">OpenWeatherMap API</a>.</p>
+<p>This project will use the <a href="http://openweathermap.org/API">OpenWeatherMap API</a>.</p>
 
 <hr>
 
@@ -218,7 +218,7 @@
     <span class="p">});</span>
 <span class="p">});</span>
 </code></pre></div>
-<p>Upon inspection of the JSON response that we receive, we&#39;ll notice that the temperatures are all in Kelvins (oh noes!). Since most people are accustomed to reading the temperature in Celsius or Fahrenheit, let&#39;s include utility functions to take care of the conversion. We can place these outside of the board&#39;s ready function.</p>
+<p>Upon inspection of the JSON response that we receive, we&#39;ll notice that the temperatures are all in Kelvins. Since most people are accustomed to reading the temperature in Celsius or Fahrenheit, let&#39;s include utility functions to take care of the conversion. We can place these outside of the board&#39;s ready function.</p>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">kelvinToCelsius</span><span class="p">(</span><span class="nx">input</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">input</span> <span class="o">-=</span> <span class="mf">273.15</span><span class="p">;</span>
     <span class="k">return</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">input</span><span class="p">);</span>
@@ -230,7 +230,7 @@
 <span class="p">}</span>
 </code></pre></div>
 <p>The weather data in the response can now be stored in variables to be sent to the LCD screen.
-When you&#39;ve got all of the data you need, call a function to execute the display loop. As a classic StarCraft fan, I called my function fireItUp().</p>
+When you&#39;ve got all of the data you need, call a function to execute the display loop. I called my function fireItUp().</p>
 
 <p>We&#39;ll pass any Kelvin measurements through our utility functions depending on the temperature format variable set at the top, or throw an error if the format is invalid.</p>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">lcd</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">&quot;ready&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
@@ -276,7 +276,7 @@ When you&#39;ve got all of the data you need, call a function to execute the dis
     <span class="p">});</span>
 <span class="p">});</span>
 </code></pre></div>
-<p>Almost done. Whew! This is the part of the application that really handles what we&#39;re seeing on the LCD. </p>
+<p>Almost done. This is the part of the application that really handles what we&#39;re seeing on the LCD. </p>
 
 <p>As you&#39;ll notice in the code below, we start off by creating our custom degree symbol mentioned earlier, and printing it to the LCD with the current temperature, as well as the current city on row 1.</p>
 

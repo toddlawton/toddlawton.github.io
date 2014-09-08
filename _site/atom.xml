@@ -4,7 +4,7 @@
  <title>Node Disassemble!</title>
  <link href="http://www.node-disassemble.com/atom.xml" rel="self"/>
  <link href="http://www.node-disassemble.com/"/>
- <updated>2014-09-08T13:25:36-04:00</updated>
+ <updated>2014-09-08T13:29:12-04:00</updated>
  <id>http://www.node-disassemble.com</id>
  <author>
    <name>Todd Lawton Beauchamp</name>
@@ -21,7 +21,7 @@
 
 &lt;p&gt;In this tutorial I&amp;#39;ll explain how to build your own LCD weather display on an &lt;a href=&quot;http://arduino.cc/en/Main/ArduinoBoardUno&quot;&gt;Arduino Uno&lt;/a&gt; running Node and &lt;a href=&quot;https://github.com/rwaldron/johnny-five&quot;&gt;Johnny-Five&lt;/a&gt;. This could serve as a nice desktop ornament that you can glance at when you wake up in the morning, and the principles in this guide will serve well in future projects that require hardware interaction with an API. &lt;/p&gt;
 
-&lt;p&gt;This project will use the pretty awesome &lt;a href=&quot;http://openweathermap.org/API&quot;&gt;OpenWeatherMap API&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;This project will use the &lt;a href=&quot;http://openweathermap.org/API&quot;&gt;OpenWeatherMap API&lt;/a&gt;.&lt;/p&gt;
 
 &lt;hr&gt;
 
@@ -186,7 +186,7 @@
     &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Upon inspection of the JSON response that we receive, we&amp;#39;ll notice that the temperatures are all in Kelvins (oh noes!). Since most people are accustomed to reading the temperature in Celsius or Fahrenheit, let&amp;#39;s include utility functions to take care of the conversion. We can place these outside of the board&amp;#39;s ready function.&lt;/p&gt;
+&lt;p&gt;Upon inspection of the JSON response that we receive, we&amp;#39;ll notice that the temperatures are all in Kelvins. Since most people are accustomed to reading the temperature in Celsius or Fahrenheit, let&amp;#39;s include utility functions to take care of the conversion. We can place these outside of the board&amp;#39;s ready function.&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;kelvinToCelsius&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;nx&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;273.15&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;parseInt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
@@ -198,7 +198,7 @@
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;The weather data in the response can now be stored in variables to be sent to the LCD screen.
-When you&amp;#39;ve got all of the data you need, call a function to execute the display loop. As a classic StarCraft fan, I called my function fireItUp().&lt;/p&gt;
+When you&amp;#39;ve got all of the data you need, call a function to execute the display loop. I called my function fireItUp().&lt;/p&gt;
 
 &lt;p&gt;We&amp;#39;ll pass any Kelvin measurements through our utility functions depending on the temperature format variable set at the top, or throw an error if the format is invalid.&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;lcd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;ready&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
@@ -244,7 +244,7 @@ When you&amp;#39;ve got all of the data you need, call a function to execute the
     &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Almost done. Whew! This is the part of the application that really handles what we&amp;#39;re seeing on the LCD. &lt;/p&gt;
+&lt;p&gt;Almost done. This is the part of the application that really handles what we&amp;#39;re seeing on the LCD. &lt;/p&gt;
 
 &lt;p&gt;As you&amp;#39;ll notice in the code below, we start off by creating our custom degree symbol mentioned earlier, and printing it to the LCD with the current temperature, as well as the current city on row 1.&lt;/p&gt;
 
